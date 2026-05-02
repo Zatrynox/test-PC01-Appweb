@@ -1,182 +1,198 @@
-# Guía Paso a Paso: Proyecto Vue con Arquitectura DDD
+# Guía Genérica: Proyecto Vue 3 + PrimeVue + DDD + vue-i18n + API Real
 
-> **Basado en:** el proyecto de referencia con Vue 3 + PrimeVue + Pinia + vue-i18n + json-server  
-> **Objetivo:** Entender cada paso para poder replicarlo en cualquier proyecto similar
+> **Para qué sirve esta guía:** Puedes aplicarla a cualquier proyecto nuevo que use
+> Vue 3, PrimeVue, vue-i18n, Pinia y una API real (no fake). Solo cambia los nombres
+> del dominio y los campos de tu API. Todo lo demás es igual.
 
 ---
 
-## PASO 1 — Ubicarse en la carpeta correcta
+## PASO 1 — Ubicarse en la carpeta de trabajo
 
 ```bash
 cd IdeaProjects
 ls -l
-cd 11990
+cd [NRC]
 ```
 
-**¿Por qué?** Es buena práctica tener todos los proyectos organizados por carpeta de curso/NRC para no mezclarlos.
+> Reemplaza `[NRC]` con tu número de NRC (ej: `11990`).  
+> El `ls -l` es solo para confirmar que estás en el lugar correcto.
 
 ---
 
 ## PASO 2 — Crear el proyecto Vue
 
 ```bash
-sudo npm create vue@latest nombre-del-proyecto
+sudo npm create vue@latest [nombre-del-proyecto]
 ```
 
-> Reemplaza `nombre-del-proyecto` con el nombre real, por ejemplo: `pc111990u202418655`
+> Reemplaza `[nombre-del-proyecto]` con el nombre que indique el enunciado.  
+> Ejemplo: `pc111990u202418655`
 
-Durante la creación, responde las preguntas así:
+Durante la creación responde **exactamente** así:
 
 | Pregunta | Respuesta |
 |---|---|
-| Add TypeScript? | No (o Yes si el enunciado lo pide) |
-| Add JSX Support? | No |
+| Add TypeScript? | **No** (salvo que el enunciado lo exija) |
+| Add JSX Support? | **No** |
 | Add Vue Router? | **Yes** |
 | Add Pinia? | **Yes** |
-| Add Vitest? | **Yes** |
-| Add ESLint? | Yes |
+| Add Vitest? | **No** |
+| Add ESLint? | **Yes** |
 
-**¿Por qué Pinia?** Es el gestor de estado oficial de Vue 3. En esta arquitectura lo usaremos como capa `application` (state management).  
-**¿Por qué Vue Router?** Permite navegar entre vistas aunque en el enunciado diga "fuera de alcance", se instala por si acaso.
+**¿Por qué estas opciones?**
+- **Vue Router → Yes:** para tener soporte de rutas aunque no las uses en este proyecto.
+- **Pinia → Yes:** es el gestor de estado oficial de Vue 3. Lo usarás en la capa `application`.
+- **Vitest y JSX → No:** no son necesarios para proyectos de este tipo.
 
 ---
 
-## PASO 3 — Entrar al proyecto e instalar dependencias de UI
+## PASO 3 — Entrar al proyecto e instalar PrimeVue
 
 ```bash
-cd nombre-del-proyecto
-sudo npm install vuetify @mdi/font
-```
-
-> **Nota:** En este proyecto de referencia se usa **PrimeVue** en lugar de Vuetify. Si tu enunciado pide PrimeVue, instala esto en su lugar:
-
-```bash
+cd [nombre-del-proyecto]
 sudo npm install primevue @primeuix/themes primeicons primeflex axios
 ```
 
-**¿Cuándo usar cada uno?**
-- **Vuetify:** cuando el enunciado dice "Material Design" o "Vuetify"
-- **PrimeVue:** cuando el enunciado menciona PrimeVue o la referencia usa componentes `pv-*`
+> Esto instala:
+> - **primevue:** librería de componentes UI (cards, buttons, menubar, etc.)
+> - **@primeuix/themes:** temas visuales para PrimeVue (ej: Material)
+> - **primeicons:** íconos `pi pi-*` que usan los componentes
+> - **primeflex:** utilidades CSS (grid, flex, spacing) estilo Bootstrap
+> - **axios:** para hacer llamadas HTTP a tu API real
 
 ---
 
-## PASO 4 — Instalar vue-i18n (internacionalización)
+## PASO 4 — Instalar vue-i18n
 
 ```bash
 sudo npm install vue-i18n --save
 ```
 
-**¿Por qué?** El enunciado siempre pide que la interfaz soporte múltiples idiomas (EN/ES). `vue-i18n` es la librería estándar para esto en Vue.
+**¿Por qué?** El enunciado pide que la interfaz soporte inglés y español.
+`vue-i18n` es la librería estándar de internacionalización para Vue 3.
 
 ---
 
-## PASO 5 — Instalar json-server (fake REST API)
-
-```bash
-sudo npm install -g json-server@0.17.4
-```
-
-**¿Por qué la versión 0.17.4?** Las versiones posteriores cambian la API y el comportamiento de las rutas. El curso usa específicamente esta versión para que `routes.json` funcione correctamente.
-
----
-
-## PASO 6 — Cambiar propietario (solo MAC)
+## PASO 5 — Cambiar propietario (solo MAC de los laboratorios)
 
 ```bash
 cd ..
-sudo chown -R alumnos ./nombre-del-proyecto
+sudo chown -R alumnos ./[nombre-del-proyecto]
 ls -l
 ```
 
-**¿Por qué?** Al usar `sudo` para crear el proyecto, los archivos quedan con propietario `root`. Este comando los devuelve al usuario `alumnos` para poder editarlos sin problemas en IntelliJ.
+**¿Por qué?** Al usar `sudo` en el paso 2, los archivos quedan con propietario `root`.
+Este comando los regresa al usuario `alumnos` para poder editarlos en IntelliJ sin
+problemas de permisos.
 
 ---
 
-## PASO 7 — Instalar dependencias y ejecutar
+## PASO 6 — Instalar dependencias y verificar que corre
 
 ```bash
-cd nombre-del-proyecto
+cd [nombre-del-proyecto]
 npm install
 npm run dev
 ```
 
-Verifica que corra en `http://localhost:5173` (puerto por defecto de Vite).
+Abre el navegador en `http://localhost:5173` y verifica que aparece la página por defecto de Vue.
+Si funciona, puedes cerrar ese servidor por ahora (`Ctrl + C`).
 
 ---
 
-## PASO 8 — Configurar la estructura de carpetas DDD
+## PASO 7 — Abrir el proyecto en IntelliJ IDEA
 
-Dentro de `src/` crear la siguiente estructura manualmente:
+Abre IntelliJ IDEA → `Open` → selecciona la carpeta del proyecto.
+Espera que indexe los archivos. Luego usa la terminal integrada del IDE para los siguientes pasos.
+
+---
+
+## PASO 8 — Crear la estructura de carpetas DDD
+
+Dentro de `src/` crear **manualmente** la siguiente estructura.
+Cambia `[subdominio]` por el nombre de tu contexto de negocio
+(ejemplos: `news`, `catalog`, `sales`, `recipes`).
 
 ```
 src/
-├── locales/              ← archivos de traducción EN y ES
-├── [subdominio]/         ← nombre del contexto (ej: news, catalog, sales)
-│   ├── application/      ← store / estado global / casos de uso
+├── locales/                        ← traducciones EN y ES
+│   ├── en.json
+│   └── es.json
+├── [subdominio]/                   ← ej: catalog, news, sales
+│   ├── application/                ← store con estado reactivo
 │   ├── domain/
-│   │   └── model/        ← entidades del dominio (.entity.js)
-│   ├── infrastructure/   ← llamadas HTTP, assemblers, adaptadores
+│   │   └── model/                  ← entidades (.entity.js)
+│   ├── infrastructure/             ← llamadas HTTP y assemblers
 │   └── presentation/
-│       └── components/   ← componentes .vue de este subdominio
-└── shared/               ← elementos reutilizables entre subdominios
-    ├── infrastructure/   ← servicios compartidos (ej: LogoDevApi)
+│       └── components/             ← componentes .vue del subdominio
+└── shared/                         ← reutilizable entre subdominios
+    ├── infrastructure/             ← servicios compartidos (ej: LogoApi)
     └── presentation/
-        └── components/   ← header, footer, layout, language-switcher
+        └── components/             ← layout, footer, language-switcher
 ```
 
-**Regla clave de DDD:**
-- `domain/model/` → solo lógica pura, sin imports de Vue ni de HTTP
-- `infrastructure/` → todo lo que toca el mundo exterior (API, HTTP, assemblers)
-- `application/` → coordina domain + infrastructure, expone estado reactivo
-- `presentation/` → solo componentes `.vue`, no llama HTTP directamente
+**Regla de oro de la arquitectura:**
+
+```
+domain     → solo datos y lógica pura. Sin Vue, sin axios, sin HTTP.
+infrastructure → todo lo que toca el exterior: HTTP, assemblers.
+application    → coordina domain + infrastructure. Expone estado reactivo.
+presentation   → solo componentes .vue. No llama axios directamente.
+shared         → lo que se repite en más de un subdominio.
+```
 
 ---
 
 ## PASO 9 — Crear los archivos de traducción
 
-En `src/locales/` crear dos archivos:
+En `src/locales/` crear dos archivos JSON con **exactamente las mismas claves**.
+Solo cambia los valores al español.
 
-**`en.json`** (ejemplo base, adaptar al proyecto):
+**`src/locales/en.json`**
+
 ```json
 {
-  "toolbar": {
-    "title": "Mi Aplicación"
-  },
-  "catalog": {
-    "title": "Catálogo",
-    "someLabel": "Some Label"
+  "some-label": "Your text here",
+  "another-label": "Another text",
+  "authoring-phrase": {
+    "intro": "Made with",
+    "use": "using",
+    "author": "by {brand} Developer Team"
   },
   "footer": {
-    "rights": "Copyright © 2026 MiEmpresa. All rights reserved",
-    "author": "Developed by [Código], [Nombre Apellido]"
+    "powered-by": "Powered by",
+    "and": "and"
   }
 }
 ```
 
-**`es.json`** (misma estructura, textos en español):
+**`src/locales/es.json`**
+
 ```json
 {
-  "toolbar": {
-    "title": "Mi Aplicación"
-  },
-  "catalog": {
-    "title": "Catálogo",
-    "someLabel": "Alguna Etiqueta"
+  "some-label": "Tu texto aquí",
+  "another-label": "Otro texto",
+  "authoring-phrase": {
+    "intro": "Hecho con",
+    "use": "utilizando",
+    "author": "por el Equipo de Desarrollo de {brand}"
   },
   "footer": {
-    "rights": "Derechos de autor © 2026 MiEmpresa. Todos los derechos reservados",
-    "author": "Desarrollado por [Código], [Nombre Apellido]"
+    "powered-by": "Contenido proporcionado por",
+    "and": "y"
   }
 }
 ```
 
-**Regla:** Los keys deben ser exactamente iguales en ambos archivos. Solo cambia el valor, nunca la clave.
+> **Qué cambiar:**
+> - Agrega o quita claves según los textos fijos que tenga tu interfaz.
+> - `{brand}` es un placeholder dinámico. En el componente lo pasas así:
+>   `t('authoring-phrase.author', { brand: 'MiMarca' })`.
+> - Nunca pongas datos que vienen de la API aquí. Solo textos fijos de la UI.
 
 ---
 
-## PASO 10 — Crear el archivo `i18n.js`
-
-En `src/` crear `i18n.js`:
+## PASO 10 — Crear `src/i18n.js`
 
 ```js
 import en from "./locales/en.json";
@@ -187,299 +203,434 @@ import { createI18n } from "vue-i18n";
  * Shared internationalization service used across presentation modules.
  */
 const i18n = createI18n({
-  legacy: false,       // obligatorio para Vue 3 Composition API
-  locale: "en",        // idioma por defecto
-  fallbackLocale: "en",
+  legacy: false,        // OBLIGATORIO para Vue 3 Composition API
+  locale: "en",         // idioma por defecto al cargar la app
+  fallbackLocale: "en", // idioma de respaldo si falta una clave
   messages: { en, es }
 });
 
 export default i18n;
 ```
 
-**¿Por qué `legacy: false`?** Habilita el modo Composition API de vue-i18n, necesario para usar `useI18n()` en los componentes.
+> **`legacy: false` es obligatorio.** Sin esto, `useI18n()` no funciona en
+> los componentes con `<script setup>`.
 
 ---
 
-## PASO 11 — Configurar variables de entorno
+## PASO 11 — Crear los archivos de variables de entorno
 
-Crear `.env.development` en la raíz del proyecto:
+Crear **dos archivos** en la raíz del proyecto (mismo nivel que `package.json`):
+
+**`.env.development`**
 
 ```env
-# URL base del API que usarás en desarrollo
-VITE_API_BASE_URL="http://localhost:3000/api/v1"
+# ─── Tu API Key ────────────────────────────────────────────────────────────────
+# Copia aquí la API Key que te da el proveedor al registrarte.
+# Ejemplo: si usas NewsAPI, te la dan en https://newsapi.org/account
+VITE_[NOMBRE]_API_KEY="pega-tu-api-key-aqui"
 
-# Endpoint del recurso principal
-VITE_RECIPES_ENDPOINT_PATH="/recipes"
+# ─── URL base del API ──────────────────────────────────────────────────────────
+# Es la parte del URL que NO cambia entre endpoints.
+# Ejemplo NewsAPI:  https://newsapi.org/v2
+# Ejemplo otro API: https://api.spoonacular.com
+# No pongas / al final.
+VITE_[NOMBRE]_API_URL="https://dominio-del-api.com/version"
+
+# ─── Rutas de los endpoints ────────────────────────────────────────────────────
+# Es la parte del URL que sí cambia según el recurso que pides.
+# Míralo en la documentación del API bajo "Endpoint" o "Path".
+# Ejemplo: /top-headlines/sources  o  /recipes  o  /products
+VITE_[RECURSO]_ENDPOINT_PATH="/ruta-del-endpoint"
+
+# Si tu API tiene más de un endpoint, agrega una línea por cada uno:
+# VITE_[OTRO_RECURSO]_ENDPOINT_PATH="/otra-ruta"
 ```
 
-Crear `.env.production` en la raíz:
+**`.env.production`**
 
 ```env
-# URL base del API en producción
-VITE_API_BASE_URL="https://miapi.com"
-VITE_RECIPES_ENDPOINT_PATH="/recipes"
+# Mismas variables pero apuntando al ambiente de producción.
+# Si usas la misma API en prod y dev, los valores son iguales.
+VITE_[NOMBRE]_API_KEY="pega-tu-api-key-aqui"
+VITE_[NOMBRE]_API_URL="https://dominio-del-api.com/version"
+VITE_[RECURSO]_ENDPOINT_PATH="/ruta-del-endpoint"
 ```
 
-**Regla importante:** Todas las variables deben empezar con `VITE_` para que Vite las exponga al frontend. Se acceden con `import.meta.env.VITE_NOMBRE_VARIABLE`.
+> **Reglas importantes:**
+> - Todas las variables **deben empezar con `VITE_`**. Sin ese prefijo, Vite no las
+>   expone al código del frontend.
+> - Se acceden en el código con: `import.meta.env.VITE_NOMBRE_VARIABLE`
+> - Nunca subas estos archivos a GitHub si contienen API keys reales.
+>   Agrégalos al `.gitignore`.
 
 ---
 
-## PASO 12 — Configurar el json-server
+## PASO 12 — Crear las entidades del dominio
 
-Crear carpeta `server/` en la raíz del proyecto con dos archivos:
+En `src/[subdominio]/domain/model/` crear un archivo `.entity.js` por cada
+objeto de tu dominio.
 
-**`server/db.json`** — pegar el JSON del enunciado o del GitHub indicado:
-```json
-{
-  "recipes": [
-    { "dishName": "Lomo Saltado", "..." : "..." }
-  ]
-}
-```
+**¿Cuántas entidades necesito?**  
+Una por cada objeto distinto que devuelve tu API. Mira el JSON de respuesta:
+- Si tiene un objeto anidado con varios campos → entidad separada.
+- Si tiene un array de objetos → entidad para esos objetos.
 
-**`server/routes.json`** — mapeo de rutas:
-```json
-{
-  "/api/v1/*": "/$1"
-}
-```
+**Ejemplo base (`mi-entidad.entity.js`):**
 
-Iniciar el servidor en una terminal separada:
-```bash
-json-server --watch server/db.json --routes server/routes.json
-```
-
-Verificar en el navegador: `http://localhost:3000/api/v1/recipes`
-
----
-
-## PASO 13 — Crear las entidades del dominio
-
-En `src/[subdominio]/domain/model/` crear un archivo `.entity.js` por cada entidad:
-
-**Ejemplo: `recipe.entity.js`**
 ```js
 /**
- * Domain entity representing a Peruvian recipe.
- * @remarks Stays independent from HTTP or Vue concerns.
+ * Domain entity representing [describe qué es este objeto].
+ *
+ * @remarks
+ * This model belongs to the domain layer and stays independent from
+ * transport or framework details.
  */
-export class Recipe {
+export class MiEntidad {
   /**
    * @param {Object} props
-   * @param {string} [props.dishName]
-   * @param {string} [props.originCity]
-   * @param {string} [props.mainProtein]
-   * @param {Object} [props.nutritionalValue]
-   * @param {Array}  [props.ingredients]
+   * @param {string} [props.campo1]   ← un campo por cada atributo de tu JSON
+   * @param {number} [props.campo2]
+   * @param {Object} [props.objetoAnidado]
+   * @param {Array}  [props.listaDeItems]
    */
   constructor({
-    dishName = '',
-    originCity = '',
-    mainProtein = '',
-    cookingTechnique = '',
-    preparationTime = '',
-    nutritionalValue = { calories: 0, fatContent: '', proteinContent: '' },
-    ingredients = []
+    campo1          = '',
+    campo2          = 0,
+    objetoAnidado   = {},
+    listaDeItems    = []
   } = {}) {
-    this.dishName = dishName;
-    this.originCity = originCity;
-    this.mainProtein = mainProtein;
-    this.cookingTechnique = cookingTechnique;
-    this.preparationTime = preparationTime;
-    this.nutritionalValue = nutritionalValue;
-    this.ingredients = ingredients;
+    this.campo1        = campo1;
+    this.campo2        = campo2;
+    this.objetoAnidado = objetoAnidado;
+    this.listaDeItems  = listaDeItems;
   }
+
+  // Si necesitas formatear algún dato (ej: fecha), agrégalo aquí como método:
+  // getFormattedDate() { return this.fecha.toLocaleDateString(...); }
 }
 ```
 
-**Regla:** Las entidades solo tienen datos y lógica de negocio pura (como formatear fechas). Nunca llaman `axios`, `fetch` ni usan `ref`/`reactive` de Vue.
+> **Qué cambiar:**
+> - Renombra la clase según tu dominio (`Recipe`, `Article`, `Product`, etc.)
+> - Los campos del `constructor` deben coincidir con los campos de tu JSON,
+>   **pero usando camelCase**. Si el API devuelve `dish_name`, aquí va `dishName`.
+>   El Assembler (paso 14) se encarga de esa traducción.
+> - Si un campo es un objeto anidado complejo, crea una entidad aparte para él
+>   y en el constructor instanciala: `this.objetoAnidado = new OtraEntidad(props.objetoAnidado)`.
 
 ---
 
-## PASO 14 — Crear el servicio de infraestructura (API)
+## PASO 13 — Crear el servicio de infraestructura (API Service)
 
 En `src/[subdominio]/infrastructure/` crear `[nombre]-api.js`:
 
 ```js
 import axios from "axios";
 
-const baseUrl      = import.meta.env.VITE_API_BASE_URL;
-const recipesPath  = import.meta.env.VITE_RECIPES_ENDPOINT_PATH;
+// Lee las variables del archivo .env.development o .env.production
+// según el ambiente en que corra la app (Vite lo detecta automáticamente).
+const baseUrl        = import.meta.env.VITE_[NOMBRE]_API_URL;
+const apiKey         = import.meta.env.VITE_[NOMBRE]_API_KEY;
+const recursoPath    = import.meta.env.VITE_[RECURSO]_ENDPOINT_PATH;
+// Si tienes más endpoints, agrega más constantes aquí:
+// const otroPath    = import.meta.env.VITE_[OTRO]_ENDPOINT_PATH;
 
-const http = axios.create({ baseURL: baseUrl });
+// Configuración base de axios: todas las peticiones de esta clase
+// usarán esta baseURL y enviarán el apiKey automáticamente.
+const http = axios.create({
+  baseURL: baseUrl,
+  params: {
+    apiKey: apiKey,   // elimina esta línea si tu API no usa apiKey como param
+  }
+});
 
 /**
- * Infrastructure adapter for the Spoonacular HTTP endpoint.
+ * Infrastructure adapter for [nombre del proveedor] HTTP endpoints.
+ *
+ * @remarks
+ * Isolates external transport concerns from application and domain layers.
  */
-export class SpoonacularApi {
+export class [Nombre]Api {
+
   /**
-   * Fetches all recipes from the API.
+   * Fetches [describe qué devuelve].
    * @returns {Promise<import('axios').AxiosResponse>}
    */
-  getRecipes() {
-    return http.get(recipesPath);
+  get[Recursos]() {
+    return http.get(recursoPath);
   }
+
+  // Si tu API tiene más endpoints, agrega un método por cada uno:
+  // get[OtroRecurso](param) {
+  //   return http.get(otroPath, { params: { key: param } });
+  // }
 }
 ```
 
-**¿Por qué una clase separada?** Si el día de mañana cambias de axios a fetch, solo modificas esta clase. El resto del código no se entera.
+> **Qué cambiar:**
+> - Renombra la clase (`NewsApi`, `SpoonacularApi`, `ProductsApi`, etc.)
+> - Renombra las constantes con los nombres de tus variables de entorno.
+> - El método `params: { apiKey }` varía según cómo tu API reciba la autenticación:
+>   - **Query param:** `params: { apiKey: apiKey }` ← como está arriba
+>   - **Header Bearer:** `headers: { Authorization: \`Bearer ${apiKey}\` }`
+>   - **Sin auth:** elimina `params` del `axios.create`
+> - Mira la documentación de tu API para saber cuál aplica.
 
 ---
 
-## PASO 15 — Crear el Assembler
+## PASO 14 — Crear el Assembler
 
 En `src/[subdominio]/infrastructure/` crear `[nombre].assembler.js`:
 
 ```js
-import { Recipe } from "../domain/model/recipe.entity.js";
+import { MiEntidad } from "../domain/model/mi-entidad.entity.js";
 
 /**
  * Maps raw API resources into domain entities.
+ *
+ * @remarks
+ * Responsible for translating infrastructure data (snake_case, nested objects,
+ * different field names) into clean domain entities.
  */
-export class RecipeAssembler {
+export class [Nombre]Assembler {
+
   /**
+   * Maps the full API response to an array of entities.
+   *
    * @param {import('axios').AxiosResponse} response
-   * @returns {Recipe[]}
+   * @returns {MiEntidad[]}
    */
   static toEntitiesFromResponse(response) {
-    // Ajusta según la estructura real del JSON
-    const data = response.data;
-    const list = Array.isArray(data) ? data : data.recipes ?? [];
+    // Ajusta esta línea según la estructura real de tu JSON de respuesta:
+    //
+    // Si el API devuelve un array directamente: [ {...}, {...} ]
+    //   → const list = response.data;
+    //
+    // Si el API devuelve un objeto con status y un array adentro:
+    //   { "status": "ok", "recipes": [ {...}, {...} ] }
+    //   → const list = response.data.recipes;
+    //
+    // Si el API devuelve un objeto con status "ok" que debes verificar:
+    //   → if (response.data.status !== "ok") return [];
+    //      const list = response.data.[nombreDelArray];
+
+    const list = response.data; // ← cambia esto según tu caso
+
     return list.map(item => this.toEntityFromResource(item));
   }
 
   /**
+   * Maps a single resource object to a domain entity.
+   *
    * @param {Object} resource
-   * @returns {Recipe}
+   * @returns {MiEntidad}
    */
   static toEntityFromResource(resource) {
-    return new Recipe({
-      dishName:         resource.dishName,
-      originCity:       resource.originCity,
-      mainProtein:      resource.mainProtein,
-      cookingTechnique: resource.cookingTechnique,
-      preparationTime:  resource.preparationTime,
-      nutritionalValue: resource.nutritionalValue,
-      ingredients:      resource.ingredients
+    return new MiEntidad({
+      // Aquí mapeas cada campo del JSON al atributo de la entidad.
+      // Izquierda: nombre del atributo en tu entidad (camelCase).
+      // Derecha:   nombre del campo en el JSON del API (como venga).
+      campo1:        resource.campo1,         // si tienen el mismo nombre
+      campo2:        resource.campo_2,        // si el API usa snake_case
+      objetoAnidado: resource.nested_object,  // objeto anidado
+      listaDeItems:  resource.items ?? [],    // array, con fallback a []
     });
   }
 }
 ```
 
-**¿Por qué el Assembler?** Si el API devuelve `dish_name` (snake_case) pero tu entidad usa `dishName` (camelCase), el Assembler hace esa traducción. La entidad siempre queda limpia.
+> **Qué cambiar:**
+> - Renombra la clase y los imports.
+> - En `toEntitiesFromResponse`, ajusta cómo se extrae la lista del JSON.
+>   Abre `http://tu-api.com/tu-endpoint` en el navegador y mira la estructura.
+> - En `toEntityFromResource`, mapea campo por campo.
+>   Si el API devuelve `dish_name` y tu entidad tiene `dishName`, aquí va:
+>   `dishName: resource.dish_name`.
+> - Si hay objetos anidados complejos, crea un segundo Assembler para ellos
+>   y llámalo aquí.
 
 ---
 
-## PASO 16 — Crear el Store (capa Application)
+## PASO 15 — Crear el Store (capa Application)
 
 En `src/[subdominio]/application/` crear `[nombre].store.js`:
 
 ```js
 import { reactive } from "vue";
-import { SpoonacularApi } from "../infrastructure/spoonacular-api.js";
-import { RecipeAssembler } from "../infrastructure/recipe.assembler.js";
+import { [Nombre]Api } from "../infrastructure/[nombre]-api.js";
+import { [Nombre]Assembler } from "../infrastructure/[nombre].assembler.js";
 
-const api = new SpoonacularApi();
+const api = new [Nombre]Api();
 
 /**
- * Application-layer state container for recipes.
- * @remarks Coordinates use-case behavior and delegates to infrastructure.
+ * Application-layer state container for [describe el dominio].
+ *
+ * @remarks
+ * Coordinates use-case behavior and delegates data acquisition
+ * and mapping to infrastructure services.
  */
-export const recipeStore = reactive({
-  recipes: [],
-  errors: [],
+export const [nombre]Store = reactive({
+  [recursos]: [],    // array principal de entidades (ej: recipes, articles)
+  errors: [],        // errores de red o del API
 
   /**
-   * Loads recipes from the API and maps them to domain entities.
+   * Loads [recursos] from the API and maps them to domain entities.
    * @returns {void}
    */
-  loadRecipes() {
+  load[Recursos]() {
     this.errors = [];
-    if (this.recipes.length > 0) return; // evitar llamadas duplicadas
 
-    api.getRecipes()
+    // Evita llamadas duplicadas si ya hay datos cargados:
+    if (this.[recursos].length > 0) return;
+
+    api.get[Recursos]()
       .then(response => {
-        this.recipes = RecipeAssembler.toEntitiesFromResponse(response);
+        this.[recursos] = [Nombre]Assembler.toEntitiesFromResponse(response);
       })
       .catch(error => {
         this.errors.push(error);
-        this.recipes = [];
+        this.[recursos] = [];
       });
-  }
+  },
+
+  // Si tu dominio necesita más acciones, agrégalas aquí como métodos:
+  // setCurrentItem(item) { ... },
+  // loadDetailFor(id) { ... }
 });
 ```
 
-**¿Por qué `reactive()` y no `ref()`?** Un objeto con múltiples propiedades relacionadas es más legible con `reactive`. Para valores simples se usa `ref`.
+> **Qué cambiar:**
+> - Renombra todo lo que está entre corchetes `[ ]`.
+> - El objeto `reactive({})` puede tener tantas propiedades y métodos como
+>   necesite tu dominio.
+> - Si la selección de un ítem dispara otra llamada al API (como en el proyecto
+>   de referencia con `setCurrentSource`), agrégalo como método adicional.
 
 ---
 
-## PASO 17 — Crear los componentes de presentación
+## PASO 16 — Crear los componentes de presentación del subdominio
 
-### `recipe-item.vue` (card de un ítem)
+En `src/[subdominio]/presentation/components/` crear un `.vue` por ítem
+y otro por lista.
+
+### `[nombre]-item.vue` — card de un elemento
 
 ```vue
 <script setup lang="js">
 import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
-import { Recipe } from "../../domain/model/recipe.entity.js";
+import { MiEntidad } from "../../domain/model/mi-entidad.entity.js";
+
+/**
+ * Presentation component for a single [nombre] card.
+ */
 
 const { t } = useI18n();
-const props = defineProps({ recipe: { type: Recipe, required: true } });
-const { recipe } = toRefs(props);
+
+// defineProps declara qué datos recibe este componente desde el padre.
+const props = defineProps({
+  [nombreEntidad]: { type: MiEntidad, required: true }
+});
+const { [nombreEntidad] } = toRefs(props);
 </script>
 
 <template>
-  <pv-card :aria-label="recipe.dishName">
-    <template #title>{{ recipe.dishName }}</template>
-    <template #subtitle>{{ recipe.originCity }}</template>
+  <!--
+    Aquí va el HTML del card.
+    Accedes a los datos con: [nombreEntidad].campo1
+    Accedes a traducciones con: t('clave.del.json')
+    Accedes a ARIA con: :aria-label="[nombreEntidad].campo1"
+  -->
+  <pv-card :aria-label="[nombreEntidad].campo1">
+    <template #title>{{ [nombreEntidad].campo1 }}</template>
+    <template #subtitle>{{ [nombreEntidad].campo2 }}</template>
     <template #content>
-      <p><strong>{{ t('catalog.protein') }}:</strong> {{ recipe.mainProtein }}</p>
-      <p><strong>{{ t('catalog.cookingStyle') }}:</strong> {{ recipe.cookingTechnique }}</p>
-      <p><strong>{{ t('catalog.prepTime') }}:</strong> {{ recipe.preparationTime }}</p>
+      <p>
+        <strong>{{ t('alguna-etiqueta') }}:</strong>
+        {{ [nombreEntidad].otrocampo }}
+      </p>
+      <!--
+        Para secciones expandibles usa pv-panel o el componente
+        de Accordion de PrimeVue.
+        Para listas usa <ul>/<li> o el componente Listbox de PrimeVue.
+      -->
     </template>
   </pv-card>
 </template>
+
+<style scoped>
+/* Estilos propios de este componente. No afectan al resto de la app. */
+</style>
 ```
 
-### `recipe-list.vue` (lista de ítems)
+### `[nombre]-list.vue` — lista de elementos
 
 ```vue
 <script setup lang="js">
 import { toRefs } from "vue";
-import RecipeItem from "./recipe-item.vue";
 import { useI18n } from "vue-i18n";
+import [Nombre]Item from "./[nombre]-item.vue";
+
+/**
+ * Presentation component that renders a collection of [nombre] cards.
+ */
 
 const { t } = useI18n();
-const props = defineProps({ recipes: { type: Array, required: true } });
-const { recipes } = toRefs(props);
+
+const props = defineProps({
+  [recursos]: { type: Array, required: true }
+});
+const { [recursos] } = toRefs(props);
 </script>
 
 <template>
-  <section aria-label="Peruvian recipes catalog">
+  <section :aria-label="t('catalog.title')">
     <h2>{{ t('catalog.title') }}</h2>
+
+    <!--
+      primeflex grid: cols="X" controla cuántos cards por fila.
+      col-12 = 1 por fila | col-6 = 2 | col-4 = 3 | col-3 = 4
+      Ajusta según lo que pide el enunciado.
+    -->
     <div class="grid">
-      <div v-for="recipe in recipes" :key="recipe.dishName" class="col-4">
-        <recipe-item :recipe="recipe"/>
+      <div
+        v-for="item in [recursos]"
+        :key="item.[campoUnico]"
+        class="col-4">
+        <[nombre]-item :[nombreEntidad]="item"/>
       </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+h2 { text-align: center; }
+</style>
 ```
 
-**Regla de presentación:**
-- Los componentes reciben datos por `props` y emiten eventos con `emit`
-- Nunca llaman `axios` ni modifican el store directamente
-- Usan `useI18n()` para traducir textos fijos
+> **Qué cambiar:**
+> - Renombra todos los `[nombre]`, `[recursos]`, `[nombreEntidad]`, `[campoUnico]`.
+> - `[campoUnico]` es el campo que usas en `:key`, debe ser único por ítem
+>   (ej: `id`, `dishName`, `url`).
+> - Agrega o quita campos en el template según los atributos de tu entidad.
+> - El número de columnas (`col-4` = 3 por fila) cámbialo según el enunciado.
 
 ---
 
-## PASO 18 — Crear componentes shared
+## PASO 17 — Crear los componentes shared
 
-### `language-switcher.vue`
+### `src/shared/presentation/components/language-switcher.vue`
 
 ```vue
 <template>
-  <pv-select-button v-model="$i18n.locale" :options="$i18n.availableLocales">
+  <!--
+    $i18n.locale: variable reactiva con el idioma actual.
+    $i18n.availableLocales: array con los idiomas definidos en i18n.js (["en", "es"]).
+    Al hacer click en un botón, $i18n.locale cambia y toda la app se retraduce.
+  -->
+  <pv-select-button
+    v-model="$i18n.locale"
+    :options="$i18n.availableLocales">
     <template #option="slotProps">
       <span>{{ slotProps.option.toUpperCase() }}</span>
     </template>
@@ -487,24 +638,45 @@ const { recipes } = toRefs(props);
 </template>
 ```
 
-### `footer-content.vue`
+### `src/shared/presentation/components/footer-content.vue`
 
 ```vue
 <script setup lang="js">
 import { useI18n } from "vue-i18n";
+
+/**
+ * Shared footer with attribution and localization support.
+ */
 const { t } = useI18n();
 </script>
 
 <template>
   <footer class="footer" role="contentinfo">
-    <p>{{ t('footer.rights') }}</p>
-    <p>{{ t('footer.author') }}</p>
+    <!--
+      Cambia el contenido según lo que pida el enunciado.
+      Usa t('clave') para textos que deben traducirse.
+      Usa texto fijo solo si el enunciado dice que va igual en todos los idiomas.
+    -->
+    <div>
+      <p>Copyright &copy; 2026. [Nombre de la empresa]</p>
+    </div>
+    <div>
+      <p>
+        {{ t('authoring-phrase.intro') }}
+        {{ t('authoring-phrase.use') }} <a href="[url-framework]" target="_blank">[Framework]</a>
+        {{ t('authoring-phrase.author', { brand: '[TuMarca]' }) }}
+      </p>
+      <p>
+        {{ t('footer.powered-by') }}
+        <a href="[url-api]" target="_blank">[Nombre API]</a>
+      </p>
+    </div>
   </footer>
 </template>
 
 <style scoped>
 .footer {
-  background-color: #1976d2;
+  background-color: #1976d2; /* cambia el color si el enunciado lo indica */
   color: white;
   text-align: center;
   padding: 16px;
@@ -513,39 +685,67 @@ const { t } = useI18n();
 </style>
 ```
 
-### `layout.vue`
+### `src/shared/presentation/components/layout.vue`
 
 ```vue
 <script setup lang="js">
 import { computed, onMounted } from "vue";
-import { recipeStore } from "../../../catalog/application/recipe.store.js";
-import RecipeList from "../../../catalog/presentation/components/recipe-list.vue";
+
+// Importa el store de tu subdominio
+import { [nombre]Store } from "../../../[subdominio]/application/[nombre].store.js";
+
+// Importa los componentes de presentación
+import [Nombre]List from "../../../[subdominio]/presentation/components/[nombre]-list.vue";
 import LanguageSwitcher from "./language-switcher.vue";
 import FooterContent from "./footer-content.vue";
 
-const recipes = computed(() => recipeStore.recipes);
-const errors  = computed(() => recipeStore.errors);
+/**
+ * Main layout component. Coordinates UI structure and delegates
+ * business logic to the application store.
+ */
 
+// Computed properties reactivas que apuntan al estado del store
+const [recursos] = computed(() => [nombre]Store.[recursos]);
+const errors     = computed(() => [nombre]Store.errors);
+
+// onMounted: se ejecuta cuando el componente se monta en el DOM.
+// Aquí es donde llamas al store para cargar los datos por primera vez.
 onMounted(() => {
-  recipeStore.loadRecipes();
+  [nombre]Store.load[Recursos]();
 });
 </script>
 
 <template>
   <div>
+    <!-- Barra de navegación superior -->
     <pv-menubar>
       <template #start>
-        <span>Spoonacular - Peruvian Food</span>
+        <!--
+          Aquí va el logo o título de la app.
+          Puedes usar un texto fijo o una imagen.
+        -->
+        <span>[Título de la App]</span>
       </template>
       <template #end>
+        <!-- Selector de idioma siempre en la esquina superior derecha -->
         <language-switcher/>
       </template>
     </pv-menubar>
   </div>
 
+  <!-- Contenido principal -->
   <main>
-    <recipe-list v-if="recipes.length > 0" :recipes="recipes"/>
-    <p v-else-if="errors.length > 0">Service unavailable.</p>
+    <!--
+      v-if / v-else: muestra la lista si hay datos,
+      un mensaje de error si algo falló,
+      o "Loading..." mientras carga.
+    -->
+    <[nombre]-list
+      v-if="[recursos].length > 0"
+      :[recursos]="[recursos]"/>
+    <p v-else-if="errors.length > 0">
+      Service is currently unavailable.
+    </p>
     <p v-else>Loading...</p>
   </main>
 
@@ -555,7 +755,7 @@ onMounted(() => {
 
 ---
 
-## PASO 19 — Configurar `main.js`
+## PASO 18 — Configurar `src/main.js`
 
 ```js
 import { createApp } from 'vue'
@@ -566,14 +766,29 @@ import PrimeVue from 'primevue/config';
 import Material from '@primeuix/themes/material';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
+
+// Importa aquí SOLO los componentes de PrimeVue que uses en tu app.
+// Si agregas un componente nuevo al template, también debes importarlo aquí.
 import {
-  Avatar, Button, Card, Drawer,
-  Menubar, SelectButton, Toolbar, Tooltip
+  Avatar,
+  Button,
+  Card,
+  Drawer,
+  Menubar,
+  SelectButton,
+  Toolbar,
+  Tooltip
+  // Agrega o quita según los componentes que uses
 } from "primevue";
 
+/**
+ * Application composition root.
+ * Wires cross-cutting services and UI components before mounting.
+ */
 createApp(App)
   .use(i18n)
   .use(PrimeVue, { ripple: true, theme: { preset: Material } })
+  // Registra cada componente con su alias pv-* para usarlo en los templates
   .component('pv-button',        Button)
   .component('pv-select-button', SelectButton)
   .component('pv-avatar',        Avatar)
@@ -585,92 +800,137 @@ createApp(App)
   .mount('#app');
 ```
 
-**¿Por qué registrar componentes globalmente?** Así no necesitas importarlos en cada `.vue`. El prefijo `pv-` evita colisiones con elementos HTML nativos.
+> **Qué cambiar:**
+> - Agrega o quita componentes de PrimeVue según los que uses en tus templates.
+> - Si usas un `pv-algo` en algún `.vue` y no está registrado aquí, verás un
+>   warning en consola y el componente no renderizará.
+> - El nombre del alias (`pv-button`) puede ser cualquier cosa, pero por
+>   convención se usa el prefijo `pv-` para distinguirlos de HTML nativo.
 
 ---
 
-## PASO 20 — Configurar `app.vue`
+## PASO 19 — Configurar `src/app.vue`
 
 ```vue
 <script setup>
 import { useI18n } from 'vue-i18n'
 import Layout from "./shared/presentation/components/layout.vue";
 
+/**
+ * Presentation shell component.
+ * Hosts the application layout and keeps bootstrapping concerns
+ * out of feature components.
+ */
 const { t } = useI18n()
 </script>
 
 <template>
+  <!-- App.vue solo renderiza el Layout. No pongas lógica de negocio aquí. -->
   <layout/>
 </template>
 ```
 
 ---
 
-## PASO 21 — Iniciar todo
+## PASO 20 — Verificar `index.html`
 
-### Terminal 1 — json-server
-```bash
-json-server --watch server/db.json --routes server/routes.json
+En la raíz del proyecto, `index.html` debe verse así (sin cambios respecto al default de Vue):
+
+```html
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Nombre de tu App]</title>  <!-- cambia solo el título si quieres -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
 ```
 
-### Terminal 2 — Vue app
+---
+
+## PASO 21 — Iniciar la aplicación
+
+Abre **dos terminales separadas** en el IDE:
+
+### Terminal 1 — Iniciar la app Vue
 ```bash
 npm run dev
 ```
 
-Abrir: `http://localhost:5173`
+Verifica en: `http://localhost:5173`
+
+### Terminal 2 — (Opcional) Si en algún proyecto necesitas json-server
+```bash
+json-server --watch server/db.json --routes server/routes.json
+```
+
+> En proyectos con API real como este, **no necesitas json-server**.
+> Solo úsalo si el enunciado lo indica como fallback o si el API real falla.
 
 ---
 
 ## PASO 22 — Empaquetar para entrega
 
-Antes de comprimir, eliminar `node_modules/` para reducir el tamaño:
-
 ```bash
+# Asegúrate de estar en la raíz del proyecto
 rm -rf node_modules
+
+# Comprimir (en MAC/Linux)
+zip -r pc1[NRC][codigo].zip ./[nombre-del-proyecto]
 ```
 
-Comprimir el proyecto como `.zip`:
-```
-pc111990u202418655.zip
-```
+El archivo resultante debe llamarse exactamente como indique el enunciado,
 
-Para restaurar dependencias después de descomprimir:
+
+Para restaurar después de descomprimir:
 ```bash
 npm install
+npm run dev
 ```
 
 ---
 
-## Resumen de la arquitectura
+## Referencia rápida: Flujo de datos
 
 ```
-Petición del usuario
-        ↓
-  [Componente .vue]   ← solo presenta datos y emite eventos
-        ↓
-  [Store / application]  ← coordina casos de uso, gestiona estado reactivo
-        ↓
-  [Assembler]         ← traduce recursos del API a entidades del dominio
-        ↓
-  [API Service]       ← hace llamadas HTTP con axios
-        ↓
-  [json-server / API real]
+Usuario interactúa con un componente .vue
+           ↓
+  [presentation] → emite evento o llama método del store
+           ↓
+  [application/store] → coordina la lógica, llama al API service
+           ↓
+  [infrastructure/api] → hace la petición HTTP con axios
+           ↓
+  API Real responde con JSON
+           ↓
+  [infrastructure/assembler] → traduce JSON → entidad del dominio
+           ↓
+  [application/store] → guarda entidades en reactive()
+           ↓
+  [presentation] → computed() detecta el cambio y re-renderiza
 ```
 
 ---
 
-## Errores comunes y cómo resolverlos
+## Errores comunes y soluciones
 
-| Error | Causa probable | Solución |
+| Error | Causa | Solución |
 |---|---|---|
-| Puerto 3000 en uso | json-server ya corre | `kill -9 $(lsof -t -i:3000)` |
-| Puerto 5173 en uso | Otra instancia de Vite | `npm run dev -- --port 5174` |
-| `Cannot find module` | Ruta de import incorrecta | Verificar la ruta relativa exacta del archivo |
-| Pantalla en blanco | Error en consola del navegador | Abrir F12 → Console y leer el error |
-| Datos no aparecen | json-server no corre | Verificar `http://localhost:3000/api/v1/recipes` |
-| Textos no se traducen | `legacy: false` falta en i18n.js | Agregar `legacy: false` al `createI18n` |
+| Pantalla en blanco | Error JS en consola | F12 → Console → leer el error |
+| `Cannot find module` | Ruta de import incorrecta | Verificar ruta relativa exacta |
+| Componente no renderiza | No registrado en main.js | Agregar `.component('pv-X', X)` |
+| Textos no se traducen | `legacy: false` falta | Agregarlo en `createI18n({...})` |
+| API devuelve 401 | API Key incorrecta o falta | Verificar `.env.development` |
+| API devuelve 403 | Plan gratuito no permite CORS | Usar proxy o cambiar de API |
+| Datos no aparecen | Error en el Assembler | Console.log de `response.data` para ver estructura real |
+| Puerto 5173 en uso | Otra instancia corriendo | `npm run dev -- --port 5174` |
 
 ---
 
-*Guía elaborada para el curso Desarrollo de Aplicaciones Open Source (1ASI0729) — NRC 11990*
+*Guía elaborada para el curso Desarrollo de Aplicaciones Web*
